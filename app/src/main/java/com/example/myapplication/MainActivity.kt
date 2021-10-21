@@ -22,13 +22,28 @@ class MainActivity : Activity(), Session.Callback {
         when(status) {
             Session.Status.Approved -> sessionApproved()
             Session.Status.Closed -> sessionClosed()
-            Session.Status.Connected,
+            Session.Status.Connected -> {
+                requestConnectionToWallet()
+            }
             Session.Status.Disconnected,
             is Session.Status.Error -> {
                 // Do Stuff
             }
         }
     }
+
+    private fun requestConnectionToWallet() {
+        val i = Intent(Intent.ACTION_VIEW)
+        i.data = Uri.parse(ExampleApplication.config.toWCUri())
+        startActivity(i)
+    }
+
+    private fun navigateToWallet() {
+        val i = Intent(Intent.ACTION_VIEW)
+        i.data = Uri.parse("wc:")
+        startActivity(i)
+    }
+
 
     override fun onMethodCall(call: Session.MethodCall) {
     }
@@ -61,9 +76,7 @@ class MainActivity : Activity(), Session.Callback {
         screen_main_connect_button.setOnClickListener {
             ExampleApplication.resetSession()
             ExampleApplication.session.addCallback(this)
-            val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(ExampleApplication.config.toWCUri())
-            startActivity(i)
+
         }
         screen_main_disconnect_button.setOnClickListener {
             ExampleApplication.session.kill()
@@ -86,6 +99,7 @@ class MainActivity : Activity(), Session.Callback {
                 ::handleResponse
             )
             this.txRequest = txRequest
+            navigateToWallet()
         }
     }
 
