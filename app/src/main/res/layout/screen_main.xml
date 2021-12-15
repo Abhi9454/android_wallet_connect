@@ -14,8 +14,7 @@
     <TextView
         android:id="@+id/screen_main_response"
         android:layout_width="wrap_content"
-        android:layout_height="64dp"
-        android:visibility="gone"/>
+        android:layout_height="64dp" />
 
     <Button
         android:id="@+id/screen_main_connect_button"
@@ -27,13 +26,11 @@
         android:id="@+id/screen_main_tx_button"
         android:layout_width="wrap_content"
         android:layout_height="64dp"
-        android:text="Send Example TX"
-        android:visibility="gone" />
+        android:text="Sign Transaction" />
 
     <Button
         android:id="@+id/screen_main_disconnect_button"
         android:layout_width="wrap_content"
         android:layout_height="64dp"
-        android:text="Disonnect"
-        android:visibility="gone" />
+        android:text="Disonnect" />
 </LinearLayout>

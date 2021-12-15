@@ -5,6 +5,7 @@ import kotlinx.android.synthetic.main.screen_main.*
 import android.os.Bundle
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.view.View
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -48,21 +49,22 @@ class MainActivity : Activity(), Session.Callback {
     override fun onMethodCall(call: Session.MethodCall) {
     }
     private fun sessionApproved() {
-        uiScope.launch {
-            screen_main_status.text = "Connected: ${ExampleApplication.session.approvedAccounts()}"
-            screen_main_connect_button.visibility = View.GONE
-            screen_main_disconnect_button.visibility = View.VISIBLE
-            screen_main_tx_button.visibility = View.VISIBLE
-        }
+//        uiScope.launch {
+//            screen_main_status.text = "Connected: ${ExampleApplication.session.approvedAccounts()}"
+//            screen_main_connect_button.visibility = View.GONE
+//            screen_main_disconnect_button.visibility = View.VISIBLE
+//            screen_main_tx_button.visibility = View.VISIBLE
+//        }
+        Log.i("Connected", ExampleApplication.session.approvedAccounts().toString());
     }
 
     private fun sessionClosed() {
-        uiScope.launch {
-            screen_main_status.text = "Disconnected"
-            screen_main_connect_button.visibility = View.VISIBLE
-            screen_main_disconnect_button.visibility = View.GONE
-            screen_main_tx_button.visibility = View.GONE
-        }
+//        uiScope.launch {
+//            screen_main_status.text = "Disconnected"
+//            screen_main_connect_button.visibility = View.VISIBLE
+//            screen_main_disconnect_button.visibility = View.GONE
+//            screen_main_tx_button.visibility = View.GONE
+//        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,18 +88,13 @@ class MainActivity : Activity(), Session.Callback {
                 ?: return@setOnClickListener
             val txRequest = System.currentTimeMillis()
             ExampleApplication.session.performMethodCall(
-                Session.MethodCall.SendTransaction(
+                Session.MethodCall.SignMessage(
                     txRequest,
                     from,
-                    "0x24EdA4f7d0c466cc60302b9b5e9275544E5ba552",
-                    null,
-                    null,
-                    null,
-                    "0x5AF3107A4000",
-                    ""
-                ),
-                ::handleResponse
+                    "0x9b2055d370f73ec7d8a03e965129118dc8f5bf83"
+                ),::handleSign
             )
+
             this.txRequest = txRequest
             navigateToWallet()
         }
@@ -112,10 +109,23 @@ class MainActivity : Activity(), Session.Callback {
     private fun handleResponse(resp: Session.MethodCall.Response) {
         if (resp.id == txRequest) {
             txRequest = null
-            uiScope.launch {
-                screen_main_response.visibility = View.VISIBLE
-                screen_main_response.text = "Last response: " + ((resp.result as? String) ?: "Unknown response")
-            }
+            Log.i("Response", ((resp.result as? String) ?: "Unknown response"));
+//            uiScope.launch {
+//                screen_main_response.visibility = View.VISIBLE
+//                screen_main_response.text = "Last response: " + ((resp.result as? String) ?: "Unknown response")
+//            }
+        }
+    }
+
+    private fun handleSign(resp: Session.MethodCall.Response) {
+        Log.i("Sign message", resp.id.toString());
+        if (resp.id == txRequest) {
+            txRequest = null
+            Log.i("SIgn message", ((resp.result as? String) ?: "Unknown response"));
+//            uiScope.launch {
+//                screen_main_response.visibility = View.VISIBLE
+//                screen_main_response.text = "Last response: " + ((resp.result as? String) ?: "Unknown response")
+//            }
         }
     }
 
